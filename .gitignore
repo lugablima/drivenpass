@@ -1,0 +1,7 @@
+node_modules
+dist
+.wakatime*
+.env
+.env.dev
+.prettier*
+.eslint*

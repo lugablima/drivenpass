@@ -1,18 +1,20 @@
 import bcrypt from "bcrypt";
-import IUserData from "../types/usersTypes";
+import { Users, InsertUser } from "../types/usersTypes";
 import * as usersRepository from "../repositories/usersRepository";
 
 async function validateIfTheEmailAlreadyExists(email: string) {
-	const user = await usersRepository.findByEmail(email);
+	const user: Users | null = await usersRepository.findByEmail(email);
 
 	if (!user) {
-		throw { code: "EmailAlreadyExists", message: "This email is already registered!" };
+		const error: Error = { name: "EmailAlreadyExists", message: "This email is already registered!" };
+		throw error;
 	}
 }
 
 function validatePasswordFormat(password: string) {
 	if (password.length < 10) {
-		throw { code: "PasswordFormat", message: "Password must be at least 10 characters long!" };
+		const error: Error = { name: "PasswordFormat", message: "Password must be at least 10 characters long!" };
+		throw error;
 	}
 }
 
@@ -23,7 +25,7 @@ function encryptPassword(password: string): string {
 	return hashedPassword;
 }
 
-export async function createAnAccount(userData: IUserData) {
+export async function createAnAccount(userData: InsertUser) {
 	const { email, password } = userData;
 
 	await validateIfTheEmailAlreadyExists(email);
@@ -34,6 +36,6 @@ export async function createAnAccount(userData: IUserData) {
 	await usersRepository.insert({ email, password: encryptedPassword });
 }
 
-export async function accessAnAccount(userData: IUserData) {
+export async function accessAnAccount(userData: InsertUser) {
 	//
 }

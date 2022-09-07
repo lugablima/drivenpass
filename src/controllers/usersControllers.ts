@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import IUserData from "../types/usersTypes";
+import { InsertUser } from "../types/usersTypes";
 import * as usersService from "../services/usersService";
 
 export async function createAnAccount(req: Request, res: Response) {
-	const userData: IUserData = req.body;
+	const userData: InsertUser = req.body;
 
 	await usersService.createAnAccount(userData);
 

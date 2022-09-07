@@ -5,15 +5,15 @@ import * as usersRepository from "../repositories/usersRepository";
 async function validateIfTheEmailAlreadyExists(email: string) {
 	const user: Users | null = await usersRepository.findByEmail(email);
 
-	if (!user) {
-		const error: Error = { name: "EmailAlreadyExists", message: "This email is already registered!" };
+	if (user) {
+		const error: Error = { name: "conflict", message: "This email is already registered!" };
 		throw error;
 	}
 }
 
 function validatePasswordFormat(password: string) {
 	if (password.length < 10) {
-		const error: Error = { name: "PasswordFormat", message: "Password must be at least 10 characters long!" };
+		const error: Error = { name: "bad_request", message: "Password must be at least 10 characters long!" };
 		throw error;
 	}
 }

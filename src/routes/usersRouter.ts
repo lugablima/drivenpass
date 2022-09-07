@@ -1,5 +1,5 @@
 import { Router } from "express";
-import validateSchema from "../middlewares/schemaValidator";
+import validateSchema from "../middlewares/schemaValidatorMiddleware";
 import userData from "../schemas/usersSchema";
 import * as usersControllers from "../controllers/usersControllers";
 

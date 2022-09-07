@@ -1,11 +1,11 @@
 import { Router } from "express";
-// import cardsRouter from "./cardsRouter";
+import usersRouter from "./usersRouter";
 // import rechargesRouter from "./rechargesRouter";
 // import paymentsRouter from "./paymentsRouter";
 
-const router = Router();
+const router: Router = Router();
 
-// router.use(cardsRouter);
+router.use(usersRouter);
 // router.use(rechargesRouter);
 // router.use(paymentsRouter);
 

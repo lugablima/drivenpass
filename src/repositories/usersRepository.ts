@@ -1,19 +1,20 @@
-import db from "../config/postgres";
-import IUserData from "../types/usersTypes";
+import { Users, InsertUser } from "../types/usersTypes";
+import prisma from "../config/prismaClient";
 
-export async function findByEmail(email: string) {
-	const result = await db.query(`SELECT * FROM users WHERE email = $1`, [email]);
+export async function findByEmail(email: string): Promise<Users | null> {
+	const result: Users | null = await prisma.users.findUnique({ where: { email } });
 
-	return result.rows[0];
+	return result;
 }
 
-export async function insert(userData: IUserData) {
-	const { email, password } = userData;
-	await db.query(`INSERT INTO users (email, password) VALUES ($1, $2)`, [email, password]);
+export async function findById(id: number): Promise<Users | null> {
+	const result: Users | null = await prisma.users.findUnique({ where: { id } });
+
+	return result;
 }
 
-export async function getUserById(id: number) {
-	const result = await db.query(`SELECT * FROM users WHERE id = $1`, [id]);
+export async function insert(userData: InsertUser): Promise<Users> {
+	const result: Users = await prisma.users.create({ data: userData });
 
-	return result.rows[0];
+	return result;
 }

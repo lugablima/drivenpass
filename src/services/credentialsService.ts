@@ -18,7 +18,17 @@ export async function create(credentialData: InsertCredential) {
 
 	const encryptedPassword: string = securityUtils.encryptField(password);
 
-	await credentialsRepository.insert({ title, url, username, password: encryptedPassword, userId });
+	const credential: TCredentials = await credentialsRepository.insert({
+		title,
+		url,
+		username,
+		password: encryptedPassword,
+		userId,
+	});
+
+	credential.password = password;
+
+	return credential;
 }
 
 export async function getAll() {

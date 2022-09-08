@@ -14,6 +14,8 @@ export async function findByUserIdAndTitle(userId: number, title: string): Promi
 	return result;
 }
 
-export async function insert(credential: InsertCredential) {
-	await prisma.credentials.create({ data: { ...credential } });
+export async function insert(credential: InsertCredential): Promise<TCredentials> {
+	const result: TCredentials = await prisma.credentials.create({ data: { ...credential } });
+
+	return result;
 }

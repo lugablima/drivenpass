@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function errorHandlerMiddleware(error: Error, _req: Request, res: Response, next: NextFunction) {
+export default function errorHandlerMiddleware(error: Error, req: Request, res: Response, next: NextFunction) {
 	if (error.name === "bad_request") {
 		return res.status(400).send(error.message);
 	}
@@ -18,5 +18,5 @@ export default function errorHandlerMiddleware(error: Error, _req: Request, res:
 		return res.status(409).send(error.message);
 	}
 
-	return res.sendStatus(500);
+	return res.status(500).send(error);
 }

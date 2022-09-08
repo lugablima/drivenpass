@@ -1,8 +1,8 @@
-import { users } from "@prisma/client";
+import { Users } from "@prisma/client";
 
-export type Users = users;
+export type TUsers = Users;
 
-export type InsertUser = Omit<users, "id">;
+export type InsertUser = Omit<Users, "id">;
 
 export interface UserToken {
 	token: string;

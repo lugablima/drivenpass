@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Users, InsertUser, UserToken } from "../types/usersTypes";
+import { TUsers, InsertUser, UserToken } from "../types/usersTypes";
 import * as usersRepository from "../repositories/usersRepository";
 import * as errorHandlingUtils from "../utils/errorHandlingUtils";
 
 async function findUserByEmail(email: string) {
-	const user: Users | null = await usersRepository.findByEmail(email);
+	const user: TUsers | null = await usersRepository.findByEmail(email);
 
 	return user;
 }
@@ -41,7 +41,7 @@ function generateToken(userId: number): string {
 export async function createAnAccount(userData: InsertUser) {
 	const { email, password } = userData;
 
-	const user: Users | null = await findUserByEmail(email);
+	const user: TUsers | null = await findUserByEmail(email);
 
 	if (user) {
 		throw errorHandlingUtils.conflict("This email is already registered!");
@@ -56,7 +56,7 @@ export async function createAnAccount(userData: InsertUser) {
 export async function accessAnAccount(userData: InsertUser) {
 	const { email, password } = userData;
 
-	const user: Users | null = await findUserByEmail(email);
+	const user: TUsers | null = await findUserByEmail(email);
 
 	if (!user) {
 		throw errorHandlingUtils.unauthorized("Invalid email or password!");

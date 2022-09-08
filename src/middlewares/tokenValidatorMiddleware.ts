@@ -4,7 +4,12 @@ import * as errorHandlingUtils from "../utils/errorHandlingUtils";
 
 export default function validateToken(req: Request, res: Response, next: NextFunction) {
 	const authorization: string | undefined = req.header("Authorization");
-	const token: string | undefined = authorization?.replace("Bearer ", "");
+
+	if (!authorization || !authorization.includes("Bearer ")) {
+		throw errorHandlingUtils.badRequest("The token was not sent!");
+	}
+
+	const token: string = authorization.replace("Bearer ", "");
 
 	if (!token) {
 		throw errorHandlingUtils.badRequest("The token was not sent!");
@@ -15,8 +20,6 @@ export default function validateToken(req: Request, res: Response, next: NextFun
 	const data: string | jwt.JwtPayload = jwt.verify(token, JWT_SECRET);
 
 	res.locals.userData = data;
-
-	console.log(data);
 
 	next();
 }

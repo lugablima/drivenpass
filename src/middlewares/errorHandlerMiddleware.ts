@@ -6,7 +6,7 @@ export default function errorHandlerMiddleware(error: Error, req: Request, res: 
 		return res.status(400).send(error.message);
 	}
 
-	if (error.name === "unauthorized") {
+	if (error.name === "unauthorized" || error.name === "JsonWebTokenError") {
 		return res.status(401).send(error.message);
 	}
 

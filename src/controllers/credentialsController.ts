@@ -13,5 +13,10 @@ export async function create(req: Request, res: Response) {
 }
 
 export async function getAll(req: Request, res: Response) {
-	//
+	const credentialId: number = Number(req.query.credentialId);
+	const { userId }: UserId = res.locals.userData;
+
+	const credentials: TCredentials | TCredentials[] = await credentialsService.getAll(credentialId, userId);
+
+	res.status(200).send(credentials);
 }

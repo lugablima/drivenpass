@@ -21,10 +21,7 @@ function decryptCredentialPasswords(credentials: TCredentials[]) {
 }
 
 async function validateCredentialId(credentialId: number, userId: number) {
-	if (!credentialId) {
-		const credentials: TCredentials[] = await credentialsRepository.findAll(userId);
-		return decryptCredentialPasswords(credentials);
-	}
+	if (!credentialId) return null;
 
 	const credential: TCredentials | null = await credentialsRepository.findById(credentialId);
 
@@ -36,9 +33,12 @@ async function validateCredentialId(credentialId: number, userId: number) {
 		throw errorHandlingUtils.unauthorized("Invalid credential id!");
 	}
 
-	credential.password = securityUtils.decryptField(credential.password);
-
 	return credential;
+}
+
+async function getAllUserCredentials(userId: number) {
+	const credentials: TCredentials[] = await credentialsRepository.findAll(userId);
+	return decryptCredentialPasswords(credentials);
 }
 
 export async function create(credentialData: InsertCredential) {
@@ -62,7 +62,24 @@ export async function create(credentialData: InsertCredential) {
 }
 
 export async function getAll(credentialId: number, userId: number) {
-	const credentials: TCredentials | TCredentials[] = await validateCredentialId(credentialId, userId);
+	const credential: TCredentials | null = await validateCredentialId(credentialId, userId);
 
-	return credentials;
+	if (!credential) {
+		const credentials: TCredentials[] = await getAllUserCredentials(userId);
+		return credentials;
+	}
+
+	credential.password = securityUtils.decryptField(credential.password);
+
+	return credential;
+}
+
+export async function deleteCredential(credentialId: number, userId: number) {
+	const credential: TCredentials | null = await validateCredentialId(credentialId, userId);
+
+	if (!credential) {
+		throw errorHandlingUtils.badRequest("Credential id was not sent!");
+	}
+
+	await credentialsRepository.deleteById(credential.id);
 }

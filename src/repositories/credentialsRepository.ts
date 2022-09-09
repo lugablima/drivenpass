@@ -26,6 +26,10 @@ export async function findByUserIdAndTitle(userId: number, title: string): Promi
 	return result;
 }
 
+export async function deleteById(id: number) {
+	await prisma.credentials.delete({ where: { id } });
+}
+
 export async function insert(credential: InsertCredential): Promise<TCredentials> {
 	const result: TCredentials = await prisma.credentials.create({ data: { ...credential } });
 

@@ -59,12 +59,12 @@ export async function getAll(wifiId: number, userId: number) {
 	return wifi;
 }
 
-export async function deleteWifi(cardId: number, userId: number) {
-	const card: TWifi | null = await validateWifiId(cardId, userId);
+export async function deleteWifi(wifiId: number, userId: number) {
+	const wifi: TWifi | null = await validateWifiId(wifiId, userId);
 
-	if (!card) {
-		throw errorHandlingUtils.badRequest("Card id was not sent!");
+	if (!wifi) {
+		throw errorHandlingUtils.badRequest("Wi-fi id was not sent!");
 	}
 
-	await wifiRepository.deleteById(card.id);
+	await wifiRepository.deleteById(wifi.id);
 }

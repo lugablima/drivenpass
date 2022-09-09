@@ -56,12 +56,12 @@ export async function getAll(noteId: number, userId: number) {
 	return note;
 }
 
-export async function deleteCredential(credentialId: number, userId: number) {
-	const credential: TNotes | null = await validateNoteId(credentialId, userId);
+export async function deleteNote(noteId: number, userId: number) {
+	const note: TNotes | null = await validateNoteId(noteId, userId);
 
-	if (!credential) {
-		throw errorHandlingUtils.badRequest("Credential id was not sent!");
+	if (!note) {
+		throw errorHandlingUtils.badRequest("Note id was not sent!");
 	}
 
-	await notesRepository.deleteById(credential.id);
+	await notesRepository.deleteById(note.id);
 }

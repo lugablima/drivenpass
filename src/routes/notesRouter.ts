@@ -7,6 +7,6 @@ const notesRouter: Router = Router();
 
 notesRouter.post("/notes", validateSchema(noteData), notesController.create);
 notesRouter.get("/notes", notesController.getAll);
-notesRouter.delete("/notes/:noteId", notesController.deletenote);
+notesRouter.delete("/notes/:noteId", notesController.deleteNote);
 
 export default notesRouter;

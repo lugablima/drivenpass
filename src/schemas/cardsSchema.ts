@@ -9,7 +9,7 @@ const cardData: ObjectSchema = joi.object({
 	expirationDate: joi.date().format("MM/YY").required(),
 	password: joi.string().trim().required(),
 	isVirtual: joi.boolean().required(),
-	type: joi.string().valid("credit", "debit", "credit/debit").required(),
+	type: joi.string().valid("credit", "debit", "credit_debit").required(),
 });
 
 export default cardData;

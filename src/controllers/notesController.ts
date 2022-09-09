@@ -25,7 +25,7 @@ export async function deletenote(req: Request, res: Response) {
 	const noteId: number = Number(req.params.noteId);
 	const { userId }: UserId = res.locals.userData;
 
-	await notesService.deletenote(noteId, userId);
+	await notesService.deleteNote(noteId, userId);
 
 	res.status(200).send("Note successfully deleted!");
 }

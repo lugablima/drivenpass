@@ -74,12 +74,12 @@ export async function getAll(credentialId: number, userId: number) {
 	return credential;
 }
 
-export async function deleteCard(credentialId: number, userId: number) {
-	const credential: TCards | null = await validateCardId(credentialId, userId);
+export async function deleteCard(cardId: number, userId: number) {
+	const card: TCards | null = await validateCardId(cardId, userId);
 
-	if (!credential) {
-		throw errorHandlingUtils.badRequest("Credential id was not sent!");
+	if (!card) {
+		throw errorHandlingUtils.badRequest("Card id was not sent!");
 	}
 
-	await cardsRepository.deleteById(credential.id);
+	await cardsRepository.deleteById(card.id);
 }

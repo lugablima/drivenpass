@@ -7,6 +7,6 @@ const cardsRouter: Router = Router();
 
 cardsRouter.post("/cards", validateSchema(cardData), cardsController.create);
 cardsRouter.get("/cards", cardsController.getAll);
-cardsRouter.delete("/cards/:cardId", cardsController.deletecard);
+cardsRouter.delete("/cards/:cardId", cardsController.deleteCard);
 
 export default cardsRouter;

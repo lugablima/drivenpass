@@ -15,6 +15,7 @@ function decryptCardPasswords(cards: TCards[]) {
 	const newCards: TCards[] = cards.map((card) => ({
 		...card,
 		password: securityUtils.decryptField(card.password),
+		securityCode: securityUtils.decryptField(card.securityCode),
 	}));
 
 	return newCards;
@@ -42,21 +43,19 @@ async function getAllUserCards(userId: number) {
 }
 
 export async function create(cardData: InsertCard) {
-	const { title, url, username, password, userId } = cardData;
+	await validateIfTheCardTitleAlreadyExists(cardData.userId, cardData.title);
 
-	await validateIfTheCardTitleAlreadyExists(userId, title);
-
-	const encryptedPassword: string = securityUtils.encryptField(password);
+	const encryptedSecurityCode: string = securityUtils.encryptField(cardData.securityCode);
+	const encryptedPassword: string = securityUtils.encryptField(cardData.password);
 
 	const card: TCards = await cardsRepository.insert({
-		title,
-		url,
-		username,
+		...cardData,
 		password: encryptedPassword,
-		userId,
+		securityCode: encryptedSecurityCode,
 	});
 
-	card.password = password;
+	card.password = cardData.password;
+	card.securityCode = cardData.securityCode;
 
 	return card;
 }
@@ -70,6 +69,7 @@ export async function getAll(credentialId: number, userId: number) {
 	}
 
 	credential.password = securityUtils.decryptField(credential.password);
+	credential.securityCode = securityUtils.decryptField(credential.securityCode);
 
 	return credential;
 }

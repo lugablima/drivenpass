@@ -31,7 +31,7 @@ export async function deleteById(id: number) {
 }
 
 export async function insert(card: InsertCard): Promise<TCards> {
-	const result: TCards = await prisma.cards.create({ data: { ...card } });
+	const result: TCards = await prisma.cards.create({ data: card });
 
 	return result;
 }

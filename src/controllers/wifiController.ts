@@ -27,5 +27,5 @@ export async function deleteWifi(req: Request, res: Response) {
 
 	await wifiService.deleteWifi(wifiId, userId);
 
-	res.status(200).send("Wifi successfully deleted!");
+	res.status(200).send("Wi-fi successfully deleted!");
 }

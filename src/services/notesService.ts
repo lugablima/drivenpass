@@ -1,7 +1,6 @@
 import { TNotes, InsertNote } from "../types/notesTypes";
 import * as notesRepository from "../repositories/notesRepository";
 import * as errorHandlingUtils from "../utils/errorHandlingUtils";
-import * as securityUtils from "../utils/securityUtils";
 
 async function validateIfTheNoteTitleAlreadyExists(userId: number, title: string) {
 	const note: TNotes | null = await notesRepository.findByUserIdAndTitle(userId, title);
@@ -9,15 +8,6 @@ async function validateIfTheNoteTitleAlreadyExists(userId: number, title: string
 	if (note) {
 		throw errorHandlingUtils.unauthorized("This note title already exists for this user!");
 	}
-}
-
-function decryptCredentialPasswords(notes: TNotes[]) {
-	const newnotes: TNotes[] = notes.map((credential) => ({
-		...credential,
-		password: securityUtils.decryptField(credential.password),
-	}));
-
-	return newnotes;
 }
 
 async function validateNoteId(noteId: number, userId: number) {
@@ -38,7 +28,7 @@ async function validateNoteId(noteId: number, userId: number) {
 
 async function getAllUserNotes(userId: number) {
 	const notes: TNotes[] = await notesRepository.findAll(userId);
-	return decryptCredentialPasswords(notes);
+	return notes;
 }
 
 export async function create(noteData: InsertNote) {
@@ -55,17 +45,15 @@ export async function create(noteData: InsertNote) {
 	return noteInserted;
 }
 
-export async function getAll(credentialId: number, userId: number) {
-	const credential: TNotes | null = await validateNoteId(credentialId, userId);
+export async function getAll(noteId: number, userId: number) {
+	const note: TNotes | null = await validateNoteId(noteId, userId);
 
-	if (!credential) {
+	if (!note) {
 		const notes: TNotes[] = await getAllUserNotes(userId);
 		return notes;
 	}
 
-	credential.password = securityUtils.decryptField(credential.password);
-
-	return credential;
+	return note;
 }
 
 export async function deleteCredential(credentialId: number, userId: number) {

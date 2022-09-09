@@ -3,11 +3,10 @@ import * as wifiRepository from "../repositories/wifiRepository";
 import * as errorHandlingUtils from "../utils/errorHandlingUtils";
 import * as securityUtils from "../utils/securityUtils";
 
-function decryptCardPasswords(wifi: TWifi[]) {
-	const newWifi: TWifi[] = wifi.map((card) => ({
-		...card,
-		password: securityUtils.decryptField(card.password),
-		securityCode: securityUtils.decryptField(card.securityCode),
+function decryptWifiPasswords(wifi: TWifi[]) {
+	const newWifi: TWifi[] = wifi.map((el) => ({
+		...el,
+		password: securityUtils.decryptField(el.password),
 	}));
 
 	return newWifi;
@@ -31,7 +30,7 @@ async function validateWifiId(wifiId: number, userId: number) {
 
 async function getAllUserWifi(userId: number) {
 	const wifi: TWifi[] = await wifiRepository.findAll(userId);
-	return decryptCardPasswords(wifi);
+	return decryptWifiPasswords(wifi);
 }
 
 export async function create(wifiData: InsertWifi) {
@@ -47,18 +46,17 @@ export async function create(wifiData: InsertWifi) {
 	return wifi;
 }
 
-export async function getAll(credentialId: number, userId: number) {
-	const credential: TWifi | null = await validateWifiId(credentialId, userId);
+export async function getAll(wifiId: number, userId: number) {
+	const wifi: TWifi | null = await validateWifiId(wifiId, userId);
 
-	if (!credential) {
-		const credentials: TWifi[] = await getAllUserWifi(userId);
-		return credentials;
+	if (!wifi) {
+		const wifis: TWifi[] = await getAllUserWifi(userId);
+		return wifis;
 	}
 
-	credential.password = securityUtils.decryptField(credential.password);
-	credential.securityCode = securityUtils.decryptField(credential.securityCode);
+	wifi.password = securityUtils.decryptField(wifi.password);
 
-	return credential;
+	return wifi;
 }
 
 export async function deleteWifi(cardId: number, userId: number) {

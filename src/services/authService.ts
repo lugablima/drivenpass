@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Users, InsertUser, UserToken } from "../types/usersTypes";
-import * as usersRepository from "../repositories/usersRepository";
+import { TUsers, InsertUser, UserToken } from "../types/authTypes";
+import * as authRepository from "../repositories/authRepository";
 import * as errorHandlingUtils from "../utils/errorHandlingUtils";
 
 async function findUserByEmail(email: string) {
-	const user: Users | null = await usersRepository.findByEmail(email);
+	const user: TUsers | null = await authRepository.findByEmail(email);
 
 	return user;
 }
@@ -38,10 +38,10 @@ function generateToken(userId: number): string {
 	return token;
 }
 
-export async function createAnAccount(userData: InsertUser) {
+export async function create(userData: InsertUser) {
 	const { email, password } = userData;
 
-	const user: Users | null = await findUserByEmail(email);
+	const user: TUsers | null = await findUserByEmail(email);
 
 	if (user) {
 		throw errorHandlingUtils.conflict("This email is already registered!");
@@ -50,13 +50,13 @@ export async function createAnAccount(userData: InsertUser) {
 	validatePasswordFormat(password);
 	const encryptedPassword: string = encryptPassword(password);
 
-	await usersRepository.insert({ email, password: encryptedPassword });
+	await authRepository.insert({ email, password: encryptedPassword });
 }
 
-export async function accessAnAccount(userData: InsertUser) {
+export async function access(userData: InsertUser) {
 	const { email, password } = userData;
 
-	const user: Users | null = await findUserByEmail(email);
+	const user: TUsers | null = await findUserByEmail(email);
 
 	if (!user) {
 		throw errorHandlingUtils.unauthorized("Invalid email or password!");

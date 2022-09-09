@@ -2,8 +2,9 @@ export function notSend(entity: string) {
 	return { code: "NotSent", message: `${entity} not sent!` };
 }
 
-export function notFound(entity: string) {
-	return { code: "NotFound", message: `${entity} not found!` };
+export function notFound(message: string) {
+	const error: Error = { name: "not_found", message };
+	return error;
 }
 
 export function invalid(entity: string) {

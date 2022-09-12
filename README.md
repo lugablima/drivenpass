@@ -1,5 +1,5 @@
 # projeto19-drivenpass
-DrivenPass API, a password manager built with TypeScript, Node.js, Express and Postgres.
+DrivenPass API, a password manager built with TypeScript, Node.js, Express, Prisma and Postgres.
 
 <h1 align="center">
   DrivenPass
@@ -65,7 +65,7 @@ POST /sign-up
 ### Access an account
 
 ```http
-PUT /sign-in
+POST /sign-in
 ```
 
 #### Request:
@@ -112,6 +112,8 @@ POST /credentials
 | `username`    | `string`| **Required**. Username.       |
 | `password`       | `string` | **Required**. Password.        |
 
+`Cannot create two different credentials with the same title`
+
 #### Response:
 
 ```json
@@ -120,7 +122,8 @@ POST /credentials
   "title": "Credential name",
   "url": "url",
   "username": "username",
-  "password": "password"
+  "password": "password",
+  "userId": 1
 }
 ```
 
@@ -163,7 +166,8 @@ GET /credentials?credentialId={id}
     "title": "Credential name",
     "url": "url",
     "username": "username",
-    "password": "password"
+    "password": "password",
+    "userId": 1
   },
   {
     ...
@@ -181,7 +185,8 @@ GET /credentials?credentialId={id}
     "title": "Credential name",
     "url": "url",
     "username": "username",
-    "password": "password"
+    "password": "password",
+    "userId": 1
 }
 ```
 
@@ -190,7 +195,7 @@ GET /credentials?credentialId={id}
 ### Delete credential
 
 ```http
-DELETE /credential/${credentialId}
+DELETE /credentials/${credentialId}
 ```
 
 #### Request:
@@ -354,6 +359,8 @@ POST /cards
 | `type`         | `string`| **Required**. Card type.              |
 
 `The card can only be of the following types: credit, debit, credit_debit`
+
+`Cannot create two different cards with the same title`
 
 #### Response:
 
@@ -584,7 +591,7 @@ DELETE /wi-fi/${wifiId}
 
 To run this project, you will need to add the following environment variables to your .env file
 
-`PORT = number #recommended:5000`
+`PORT = number` `Recommended:5000`
 
 `DATABASE_URL = postgres://UserName:Password@Hostname:5432/DatabaseName`
 

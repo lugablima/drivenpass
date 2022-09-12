@@ -11,6 +11,7 @@ DrivenPass API, a password manager built with TypeScript, Node.js, Express and P
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" height="30px"/>
   <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" height="30px"/>  
   <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express.js&logoColor=white" height="30px"/>
+  <img src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white" height="30px"/>
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" height="30px"/>
   <!-- Badges source: https://dev.to/envoy_/150-badges-for-github-pnk -->
 </div>
@@ -51,16 +52,6 @@ POST /sign-up
 ```
 
 #### Request:
-
-####
-
-| Headers     | Type     | Description           |
-| :---------- | :------- | :-------------------- |
-| `x-api-key` | `string` | **Required**. API key |
-
-####
-
-</br>
 
 | Body         | Type      | Description                        |
 | :----------  | :-------- | :--------------------------------- |
@@ -104,138 +95,488 @@ POST /credentials
 
 #### Request:
 
+####
+
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
+
+`The Authorization field must have the following format: Bearer ${token}`
+
+####
+
 | Body             | Type     | Description                        |
 | :--------------- | :------- | :--------------------------------- |
 | `title`      | `string`| **Required**. Credential name. |
 | `url`         | `string`| **Required**. Valid url.              |
-| `username    | `string`| **Required**. Username.       |
+| `username`    | `string`| **Required**. Username.       |
 | `password`       | `string` | **Required**. Password.        |
 
 #### Response:
 
 ```json
 {
-  "id: 1,
-  "title": "name",
+  "id": 1,
+  "title": "Credential name",
   "url": "url",
+  "username": "username",
+  "password": "password"
 }
 ```
 
 #
 
-### Unlock a card
+### Search credentials
 
 ```http
-PUT /unlock-card
+GET /credentials
+```
+
+`To search all user credentials`
+
+#### OR 
+
+```http
+GET /credentials?credentialId={id}
+```
+
+`To search a specific credential`
+
+#### Request:
+
+####
+
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
+
+`The Authorization field must have the following format: Bearer ${token}`
+
+#### Response:
+
+#### If search all user credentials: 
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Credential name",
+    "url": "url",
+    "username": "username",
+    "password": "password"
+  },
+  {
+    ...
+  }
+]
+```
+
+#### OR
+
+#### If search a specific credential: 
+
+```json
+{
+    "id": 1,
+    "title": "Credential name",
+    "url": "url",
+    "username": "username",
+    "password": "password"
+}
+```
+
+#
+
+### Delete credential
+
+```http
+DELETE /credential/${credentialId}
 ```
 
 #### Request:
 
-| Body             | Type     | Description                        |
-| :--------------- | :------- | :--------------------------------- |
-| `cardId`         | `integer`| **Required**. Card id              |
-| `password`       | `string` | **Required**. Card password        |
+####
+
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
+
+`The Authorization field must have the following format: Bearer ${token}`
 
 #
 
-### Get the card balance and transactions
+### Create safe note
 
 ```http
-GET /balance/${cardId}
+POST /notes
 ```
+
+#### Request:
+
+####
+
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
+
+`The Authorization field must have the following format: Bearer ${token}`
+
+####
+
+| Body             | Type     | Description                        |
+| :--------------- | :------- | :--------------------------------- |
+| `title`      | `string`| **Required**. Note name. |
+| `note`         | `string`| **Required**. Note.              |
+
+`Title cannot be longer than 50 characters`
+
+`The annotation no longer than 1000 characters`
+
+`Cannot create two different annotations with the same title`
 
 #### Response:
 
 ```json
 {
-  "balance": 1,
-	"transactions": [
-    { "id": 1, "cardId": 1, "businessId": 1, "businessName": "Name", "timestamp": "DD/MM/YYYY", "amount": 1 }
-  ],
-  "recharges": [
-    { "id": 1, "cardId": 1, "timestamp": "DD/MM/YYYY", "amount": 1 }
-  ]
+  "id": 1,
+  "title": "Annotation name",
+  "note": "My annotation",
+  "userId": 1
 }
 ```
 
 #
 
-### Recharge a card
+### Search credentials
 
 ```http
-POST /recharges
+GET /notes
 ```
 
-#### Request:
+`To search all user notes`
 
-| Headers     | Type     | Description           |
-| :---------- | :------- | :-------------------- |
-| `x-api-key` | `string` | **Required**. API key |
+#### OR 
+
+```http
+GET /notes?noteId={id}
+```
+
+`To search a specific note`
+
+#### Request:
 
 ####
 
-| Body             | Type      | Description                            |
-| :--------------- | :-------- | :------------------------------------- |
-| `cardId`         | `integer` | **Required**. Card Id                  |
-| `amount`         | `integer` | **Required**. Recharge amount in cents |
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
 
-#
+`The Authorization field must have the following format: Bearer ${token}`
 
-### Make a purchase at a point of sale (POS) with the card
+#### Response:
 
-```http
-POST /payments
-```
-#### Request:
+#### If search all user notes: 
 
-| Body             | Type      | Description                           |
-| :--------------- | :-------- | :------------------------------------ |
-| `cardId`         | `integer` | **Required**. Card id                 |
-| `password`       | `string`  | **Required**. Card password           |
-| `businessId`     | `integer` | **Required**. Business id             |
-| `amount`         | `integer` | **Required**. Payment amount in cents |
-
-#
-
-### Make an online purchase with a card
-
-```http
-POST /online-payments
+```json
+[
+  {
+    "id": 1,
+    "title": "Annotation name",
+    "note": "My annotation",
+    "userId": 1
+  },
+  {
+    ...
+  }
+]
 ```
 
-#### Request:
+#### OR
 
-| Body             | Type      | Description                           |
-| :--------------- | :-------- | :------------------------------------ |
-| `number`         | `string`  | **Required**. Card number             |
-| `cardholderName` | `string`  | **Required**. Name in card            |
-| `expirationDate` | `string`  | **Required**. Card expiration date    |
-| `cvc`            | `string`  | **Required**. Card CVC                |
-| `businessId`     | `integer` | **Required**. Business id             |
-| `amount`         | `integer` | **Required**. Payment amount in cents |
+#### If search a specific note: 
 
-`Expiration Date Format: "MM/YY"`
-
-`CVC max length: 3`
+```json
+{
+    "id": 1,
+    "title": "Annotation name",
+    "note": "My annotation",
+    "userId": 1
+}
+```
 
 #
 
-### Create an online card
+### Delete note
 
 ```http
-POST /virtual-card
+DELETE /notes/${noteId}
 ```
 
 #### Request:
 
-| Body                   | Type      | Description                           |
-| :--------------------- | :-------- | :------------------------------------ |
-| `originalCardId`       | `integer` | **Required**. Original card id        |
-| `originalCardPassword` | `string`  | **Required**. Original card password  |
+####
 
-`Password length: 4`
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
 
-`Password pattern: only numbers`
+`The Authorization field must have the following format: Bearer ${token}`
+
+#
+
+### Create card
+
+```http
+POST /cards
+```
+
+#### Request:
+
+####
+
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
+
+`The Authorization field must have the following format: Bearer ${token}`
+
+####
+
+| Body             | Type     | Description                        |
+| :--------------- | :------- | :--------------------------------- |
+| `title`      | `string`| **Required**. Name given to the card. |
+| `cardNumber`      | `string`| **Required**. Card number. |
+| `cardholderName`      | `string`| **Required**. Card name. |
+| `securityCode`      | `string`| **Required**. Card security code. |
+| `expirationDate`      | `string`| **Required**. Card expiration date. |
+| `password`      | `string`| **Required**. Card password. |
+| `isVirtual`      | `boolean`| **Required**. Whether the card is virtual or not. |
+| `type`         | `string`| **Required**. Card type.              |
+
+`The card can only be of the following types: credit, debit, credit_debit`
+
+#### Response:
+
+```json
+{
+  "id": 1,
+  "title": "Name given to the card",
+  "cardNumber": "1111111111111111",
+  "cardholderName": "MY NAME",
+  "securityCode": "111",
+  "expirationDate": "DD/MM",
+  "password": "My password",
+  "isVirtual": false,
+  "type": "credit",
+  "userId": 1
+}
+```
+
+#
+
+### Search cards
+
+```http
+GET /cards
+```
+
+`To search all user cards`
+
+#### OR 
+
+```http
+GET /cards?cardId={id}
+```
+
+`To search a specific card`
+
+#### Request:
+
+####
+
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
+
+`The Authorization field must have the following format: Bearer ${token}`
+
+#### Response:
+
+#### If search all user cards: 
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Name given to the card",
+    "cardNumber": "1111111111111111",
+    "cardholderName": "MY NAME",
+    "securityCode": "111",
+    "expirationDate": "DD/MM",
+    "password": "My password",
+    "isVirtual": false,
+    "type": "credit",
+    "userId": 1
+  },
+  {
+    ...
+  }
+]
+```
+
+#### OR
+
+#### If search a specific card: 
+
+```json
+{
+  "id": 1,
+  "title": "Name given to the card",
+  "cardNumber": "1111111111111111",
+  "cardholderName": "MY NAME",
+  "securityCode": "111",
+  "expirationDate": "DD/MM",
+  "password": "My password",
+  "isVirtual": false,
+  "type": "credit",
+  "userId": 1
+}
+```
+
+#
+
+### Delete card
+
+```http
+DELETE /cards/${cardId}
+```
+
+#### Request:
+
+####
+
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
+
+`The Authorization field must have the following format: Bearer ${token}`
+
+#
+
+### Create a wi-fi log
+
+```http
+POST /wi-fi
+```
+
+#### Request:
+
+####
+
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
+
+`The Authorization field must have the following format: Bearer ${token}`
+
+####
+
+| Body             | Type     | Description                        |
+| :--------------- | :------- | :--------------------------------- |
+| `title`      | `string`| **Required**. Name given to the wi-fi network record. |
+| `networkName`      | `string`| **Required**. Network name. |
+| `password`      | `string`| **Required**. Wi-fi password. |
+
+#### Response:
+
+```json
+{
+  "id": 1,
+  "title": "Name given to the wi-fi network record",
+  "networkName": "Network name",
+  "password": "My password",
+  "userId": 1
+}
+```
+
+#
+
+### Search wi-fi logs
+
+```http
+GET /wi-fi
+```
+
+`To search all user wi-fi`
+
+#### OR 
+
+```http
+GET /wi-fi?wifiId={id}
+```
+
+`To search a specific wi-fi`
+
+#### Request:
+
+####
+
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
+
+`The Authorization field must have the following format: Bearer ${token}`
+
+#### Response:
+
+#### If search all user wi-fi: 
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Name given to the wi-fi network record",
+    "networkName": "Network name",
+    "password": "My password",
+    "userId": 1
+  },
+  {
+    ...
+  }
+]
+```
+
+#### OR
+
+#### If search a specific wi-fi: 
+
+```json
+{
+  "id": 1,
+  "title": "Name given to the wi-fi network record",
+  "networkName": "Network name",
+  "password": "My password",
+  "userId": 1
+}
+```
+
+#
+
+### Delete a wi-fi log
+
+```http
+DELETE /wi-fi/${wifiId}
+```
+
+#### Request:
+
+####
+
+| Headers     | Type     | Description           |
+| :---------- | :------- | :-------------------- |
+| `Authorization` | `string` | **Required**. User token. |
+
+`The Authorization field must have the following format: Bearer ${token}`
 
 #
 
@@ -247,7 +588,9 @@ To run this project, you will need to add the following environment variables to
 
 `DATABASE_URL = postgres://UserName:Password@Hostname:5432/DatabaseName`
 
-`CVC_SECRET_KEY = any string`
+`JWT_SECRET = any string`  
+
+`CRYPTR_SECRET = any string`
 
 </br>
 
@@ -256,13 +599,13 @@ To run this project, you will need to add the following environment variables to
 Clone the project
 
 ```bash
-  git clone https://github.com/lugablima/projeto18-valex
+  git clone https://github.com/lugablima/projeto19-drivenpass
 ```
 
 Go to the project directory
 
 ```bash
-  cd projeto18-valex/
+  cd projeto19-drivenpass/
 ```
 
 Install dependencies
@@ -276,3 +619,5 @@ Start the server
 ```bash
   npm run start
 ```
+
+`The API deploy link is: https://back-projeto19-drivenpass.herokuapp.com/`
